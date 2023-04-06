@@ -38,17 +38,17 @@ def get_argmin_value(matrix: np.ndarray) -> tuple[int, int]:
 
 
 def init_index_dict(len_: int) -> list[str]:
-    index_dict = [chr(65 + i) for i in range(len_)]
-    return index_dict
+    return [chr(65 + i) for i in range(len_)]
 
 
 # In[14]:
 
 
 def get_u_mean_distances(distance_matrix: np.ndarray) -> np.array:
-    u_mean_distances = []
-    for i in range(distance_matrix.shape[0]):
-        u_mean_distances.append(distance_matrix.values[:, i].mean())
+    u_mean_distances = [
+        distance_matrix.values[:, i].mean()
+        for i in range(distance_matrix.shape[0])
+    ]
     u_mean_distances = np.array(u_mean_distances)
     return u_mean_distances
 
@@ -140,8 +140,16 @@ def main():
         d0, d1 = get_distance_from_smallest_pair_to_new_node(distance_matrix,
                                                              u_mean_distances,
                                                              smallest_pair)
-        nick_tree.append((f"U{iteration}", distance_matrix.index[smallest_pair[0]], d0))
-        nick_tree.append((f"U{iteration}", distance_matrix.columns[smallest_pair[1]], d1))
+        nick_tree.extend(
+            (
+                (f"U{iteration}", distance_matrix.index[smallest_pair[0]], d0),
+                (
+                    f"U{iteration}",
+                    distance_matrix.columns[smallest_pair[1]],
+                    d1,
+                ),
+            )
+        )
         new_row, new_column = get_new_values(distance_matrix,
                                     smallest_pair,
                                     pairs_distance)
